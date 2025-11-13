@@ -50,5 +50,6 @@ Thumbs.db
 node_modules/
 
 # Telegram bot token or other secrets
-telagram/*.py
-.telagram
+# If you keep secrets in the `telagram` package do NOT commit them.
+# Example: keep a file named `telagram/.env` and add that to .gitignore instead.
+# telagram/*.pyc
