@@ -41,3 +41,12 @@ git push -u origin main
 ```
 
 If you want, tell me the GitHub repo name and whether you want it public or private and I can supply the exact `gh` command to run, or a one-line command you can paste into PowerShell to create and push the repo automatically.
+
+Environment variables (for Render)
+----------------------------------
+For production deploys (Render, Heroku, etc.) put secrets into environment variables instead of hardcoding them in source. This project uses the following env vars for Telegram alerts:
+
+- `TELEGRAM_BOT_TOKEN` — your bot token
+- `TELEGRAM_CHAT_ID` — the chat id or channel
+
+An example file `.env.example` is included; do NOT commit `.env` with real secrets. On Render, add these variables under the service's "Environment" or "Secrets" settings.
