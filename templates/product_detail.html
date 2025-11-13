@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | AURORA Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    {% if not product %}
+        <div class="alert alert-danger text-center">
+            <h2>Product Not Found</h2>
+            <p>We couldn't locate the product you were looking for.</p>
+            <a href="{{ url_for('shop_all') }}" class="btn btn-dark rounded-0 mt-3">Back to Shop</a>
+        </div>
+    {% else %}
+
+    <div class="row">
+        <!-- Image Column -->
+        <div class="col-md-7 mb-4">
+            <!-- Main Product Image -->
+            <img src="{{ url_for('static', filename=product.image) }}" class="img-fluid rounded-0 shadow-sm" alt="{{ product.name }}">
+
+            <!-- Attributes/Details Section -->
+            <div class="mt-5 border-top pt-4">
+                <h3 class="section-title mb-3" style="font-size: 1.25rem;">Details & Care</h3>
+                <p class="text-muted">{{ product.description }}</p>
+
+                <ul class="list-unstyled mt-4 text-muted small">
+                    {% for key, value in product.attributes.items() %}
+                        <li class="mb-1"><strong class="text-dark">{{ key }}:</strong> {{ value }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Product Information and Controls Column -->
+        <div class="col-md-5">
+            <h1 class="section-title mb-2" style="font-size: 2rem;">{{ product.name }}</h1>
+            <p class="text-muted mb-3">{{ product.category }}</p>
+
+            <div class="product-price mb-4" style="font-size: 1.8rem;">
+                {% if product.is_sale and product.original_price is not none %}
+                <span class="original-price" style="font-size: 0.7em;">${{ "%.2f" | format(product.original_price) }}</span>
+                <span class="sale-price" style="color: #dc3545;">${{ "%.2f" | format(product.price) }}</span>
+                {% else %}
+                <span>${{ "%.2f" | format(product.price) }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Size Selection -->
+            <div class="form-group mb-4">
+                <label for="sizeSelect" class="font-weight-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Select Size: <span id="selectedSizeDisplay" class="font-weight-normal text-dark"></span></label>
+                <div id="sizeSelectionDetail" class="d-flex flex-wrap" data-selected-size="">
+                    {% for size in product.sizes %}
+                    <button type="button"
+                            class="btn btn-outline-dark btn-lg rounded-0 mr-2 mb-2 size-option-detail"
+                            data-size="{{ size }}">
+                        {{ size }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quantity Selector -->
+            <div class="form-group mb-5">
+                <label for="quantitySelectDetail" class="font-weight-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Quantity</label>
+                <input type="number" id="quantitySelectDetail" class="form-control rounded-0" value="1" min="1" style="max-width: 100px;">
+            </div>
+
+            <!-- CTA Button -->
+            <button class="btn btn-dark btn-lg btn-block rounded-0" id="detailAddToCartBtn" data-product-id="{{ product.id }}">
+                Add to Cart
+            </button>
+
+            <!-- Shipping/Return Info -->
+            <div class="mt-4 text-muted small">
+                <p class="mb-1">Ships within 24 hours.</p>
+                <p class="mb-1">30-day easy returns policy.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Notification/Toast Area for Cart Confirmation (Must be included here too) -->
+<div id="cartNotification" class="toast fade hide" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1051; width: 250px;">
+    <div class="toast-header bg-dark text-white rounded-0">
+        <strong class="mr-auto">AURORA Cart</strong>
+        <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body bg-white text-dark rounded-0">
+        <span id="notificationText">Item successfully added!</span>
+    </div>
+</div>
+
+<!-- JavaScript for Size Selection and Add to Cart -->
+<script>
+    // --- Cart Utility Functions (Re-defining here for self-contained functionality) ---
+    const CART_STORAGE_KEY = 'auroraCart';
+
+    // The product for this page is pulled directly from Jinja context
+    const productData = [{
+        id: parseInt('{{ product.id }}'),
+        name: '{{ product.name }}',
+        price: {{ product.price }},
+        sizes: [
+            {% for size in product.sizes %}
+                '{{ size }}',
+            {% endfor %}
+        ],
+        image: '{{ product.image }}'
+    }];
+
+    function getCart() {
+        try {
+            const cartString = localStorage.getItem(CART_STORAGE_KEY);
+            return cartString ? JSON.parse(cartString) : [];
+        } catch (e) {
+            console.error("Error reading cart from localStorage:", e);
+            return [];
+        }
+    }
+
+    function saveCart(cart) {
+        try {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+        } catch (e) {
+            console.error("Error saving cart to localStorage:", e);
+        }
+    }
+
+    function updateCartCount() {
+        const cart = getCart();
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        const cartCountElement = document.getElementById('cartCount');
+        if (cartCountElement) {
+            cartCountElement.textContent = totalItems;
+        }
+    }
+
+    function showNotification(message) {
+        const notificationEl = document.getElementById('cartNotification');
+        document.getElementById('notificationText').textContent = message;
+        // Uses the jQuery included in base.html for the Bootstrap Toast component
+        $(notificationEl).toast({ delay: 3000 });
+        $(notificationEl).toast('show');
+    }
+
+    function addToCart(productId, size, quantity) {
+        productId = parseInt(productId);
+        quantity = parseInt(quantity);
+
+        if (!size || size === 'N/A') {
+             showNotification("Please select a size before adding to cart.");
+             return false;
+        }
+
+        const cart = getCart();
+        const existingItemIndex = cart.findIndex(item => item.id === productId && item.size === size);
+
+        const product = productData.find(p => p.id === productId);
+
+        if (existingItemIndex > -1) {
+            cart[existingItemIndex].quantity += quantity;
+        } else {
+            if (!product) {
+                console.error(`Product with ID ${productId} not found.`);
+                return false;
+            }
+            cart.push({
+                id: productId,
+                name: product.name,
+                price: product.price,
+                size: size,
+                quantity: quantity,
+                image: product.image
+            });
+        }
+
+        saveCart(cart);
+        updateCartCount();
+        showNotification(`${quantity}x ${product.name} (${size}) added to cart.`);
+        return true;
+    }
+    // --- End Cart Utility Functions ---
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCartCount();
+
+        const sizeButtons = document.querySelectorAll('.size-option-detail');
+        const sizeContainer = document.getElementById('sizeSelectionDetail');
+        const selectedSizeDisplay = document.getElementById('selectedSizeDisplay');
+        const quantityInput = document.getElementById('quantitySelectDetail');
+        const addToCartButton = document.getElementById('detailAddToCartBtn');
+
+        let selectedSize = '';
+
+        // Initial setup for default selection
+        if (sizeButtons.length > 0) {
+            sizeButtons[0].classList.remove('btn-outline-dark');
+            sizeButtons[0].classList.add('btn-dark');
+            selectedSize = sizeButtons[0].getAttribute('data-size');
+            selectedSizeDisplay.textContent = selectedSize;
+        } else {
+             // Handle case where product might not have sizes (e.g., One Size)
+             selectedSize = 'One Size';
+             selectedSizeDisplay.textContent = 'One Size';
+        }
+
+        sizeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Deselect all
+                sizeButtons.forEach(b => {
+                    b.classList.remove('btn-dark');
+                    b.classList.add('btn-outline-dark');
+                });
+
+                // Select clicked button
+                e.target.classList.remove('btn-outline-dark');
+                e.target.classList.add('btn-dark');
+
+                selectedSize = e.target.getAttribute('data-size');
+                selectedSizeDisplay.textContent = selectedSize;
+            });
+        });
+
+        // Add to Cart Handler
+        addToCartButton.addEventListener('click', () => {
+            const quantity = parseInt(quantityInput.value);
+            const productId = parseInt(addToCartButton.getAttribute('data-product-id'));
+
+            // Check if a size selection is mandatory (if there are sizes to choose from)
+            const isSizeMandatory = sizeButtons.length > 0;
+
+            if (quantity <= 0) {
+                showNotification("Please enter a valid quantity.");
+                return;
+            }
+
+            if (isSizeMandatory && selectedSize === 'One Size') {
+                 // If sizes exist, but the default 'One Size' is still showing, meaning no button was clicked.
+                 showNotification("Please select a size.");
+                 return;
+            }
+
+            if (selectedSize) {
+                addToCart(productId, selectedSize, quantity);
+            }
+        });
+
+        // Ensure default 'One Size' text is set correctly if no sizes are available
+        if (sizeButtons.length === 0) {
+            selectedSize = 'One Size';
+            selectedSizeDisplay.textContent = 'One Size';
+        }
+
+    });
+</script>
+
+{% endblock content %}

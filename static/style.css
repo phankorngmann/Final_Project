@@ -1,0 +1,228 @@
+/* Custom CSS for Premium E-Commerce site (AURORA) */
+
+/* 1. Typography and General Look */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif; /* Slightly more precise font stack */
+    background-color: #ffffff; 
+    color: #333;
+}
+
+.section-title {
+    font-weight: 400; 
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+}
+
+/* 2. Top Utility Bar */
+.top-bar {
+    background-color: #333; /* Dark background */
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 3. Navigation Bar */
+.nav-main {
+    border-bottom: 1px solid #eee;
+}
+
+.navbar-brand {
+    font-size: 1.6rem;
+    letter-spacing: 4px;
+    font-weight: 700;
+}
+
+.nav-links .nav-link {
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-utility .nav-link {
+    font-size: 1.1rem;
+    margin-left: 10px;
+}
+
+/* 4. Hero Section */
+.hero-banner {
+    position: relative;
+    max-height: 600px;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2); /* Subtle dark overlay for text contrast */
+}
+
+.hero-overlay .display-3 {
+    font-weight: 100;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+}
+
+.shop-btn:hover {
+    background-color: #333 !important;
+    color: white !important;
+    border-color: #333 !important;
+}
+
+/* 5. Product Cards (Advanced UX) */
+.product-card {
+    transition: box-shadow 0.3s ease;
+    border: none !important;
+}
+
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img-top {
+    height: 400px; /* Taller images are more impactful */
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .card-img-top {
+    transform: scale(1.05); /* Zoom effect on hover */
+}
+
+/* Sale/New Badges */
+.sale-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    border-radius: 0;
+    font-weight: bold;
+}
+.new-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    border-radius: 0;
+    font-weight: bold;
+    background-color: #5a5a5a !important;
+}
+
+/* Quick View Overlay */
+.quick-view-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(100px); /* Initially hidden below the card */
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .quick-view-overlay {
+    transform: translateY(-50px); /* Slide up to be visible on hover */
+}
+
+/* Pricing Style */
+.product-price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #000;
+}
+
+.original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 0.9rem;
+    margin-right: 5px;
+    font-weight: 400;
+}
+
+.sale-price {
+    color: #dc3545; /* Red for sale price */
+}
+
+/* 6. Footer Styling */
+.footer-heading {
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+/* 7. Responsive Adjustments (Mobile Optimization) */
+@media (max-width: 768px) {
+    /* Reduce Hero Banner padding on smaller screens */
+    .hero-banner {
+        max-height: 450px;
+    }
+
+    .hero-overlay .display-3 {
+        font-size: 2rem; /* Reduce font size for small screens */
+        letter-spacing: 5px;
+    }
+
+    /* Reduce image height on mobile to save space */
+    .card-img-top {
+        height: 300px;
+    }
+
+    /* Keep the quick view button hidden by default on mobile */
+    /* Mobile users typically tap, not hover, so a persistent CTA is better than a hover CTA */
+    .quick-view-overlay {
+        transform: translateY(100px) !important;
+        /* The !important ensures the hover rule doesn't override it on mobile touch events */
+    }
+
+    /* Make the button always visible on card for mobile engagement (optional) */
+    .card-footer .btn {
+        display: block;
+        width: 100%;
+    }
+}
+
+/* 8. Refined Button/Link Styling */
+
+/* Style for the button in the quick view overlay */
+.quick-view-overlay .btn-dark {
+    border: 2px solid #000;
+    transition: background-color 0.2s ease;
+}
+
+.quick-view-overlay .btn-dark:hover {
+    background-color: transparent !important;
+    color: #000 !important;
+}
+
+/* Refine the general outline button used on product cards */
+.btn-outline-dark {
+    border-color: #333 !important;
+    color: #333 !important;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-dark:hover {
+    background-color: #333 !important;
+    color: #fff !important;
+    border-color: #333 !important;
+}
+
+/* 9. Footer Link Hover State */
+footer a.text-secondary {
+    transition: color 0.2s ease;
+}
+
+footer a.text-secondary:hover {
+    color: #fff !important; /* Brighter white on hover */
+    text-decoration: underline;
+}

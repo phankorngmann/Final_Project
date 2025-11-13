@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart | AURORA Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Your Shopping Bag</h1>
+    <div class="row">
+
+        <div class="col-lg-8">
+            {% if cart_items %}
+                <table class="table table-borderless">
+                    <thead class="border-bottom">
+                        <tr>
+                            <th scope="col" class="text-uppercase small font-weight-bold">Product</th>
+                            <th scope="col" class="text-uppercase small font-weight-bold">Price</th>
+                            <th scope="col" class="text-uppercase small font-weight-bold">Quantity</th>
+                            <th scope="col" class="text-uppercase small font-weight-bold text-right">Total</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="{{ url_for('static', filename='img/product-image-watch.jpg') }}" alt="Watch" style="width: 50px;" class="mr-2"> Classic Chronograph</td>
+                            <td>$450.00</td>
+                            <td><input type="number" class="form-control form-control-sm rounded-0" value="1" min="1" style="width: 60px;"></td>
+                            <td class="text-right">$450.00</td>
+                            <td><button class="btn btn-sm text-muted"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><img src="{{ url_for('static', filename='img/product-image-wallet.jpg') }}" alt="Jacket" style="width: 50px;" class="mr-2"> Minimalist Linen Jacket</td>
+                            <td>$129.99</td>
+                            <td><input type="number" class="form-control form-control-sm rounded-0" value="2" min="1" style="width: 60px;"></td>
+                            <td class="text-right">$259.98</td>
+                            <td><button class="btn btn-sm text-muted"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-right border-top pt-3">
+                    <a href="/shop" class="btn btn-outline-dark rounded-0">Continue Shopping</a>
+                </div>
+            {% else %}
+                <div class="alert alert-secondary text-center py-5" role="alert">
+                    <i class="fas fa-shopping-bag fa-3x mb-3 text-muted"></i>
+                    <h4 class="alert-heading">Your cart is empty.</h4>
+                    <p>Looks like you haven't added anything to your bag yet. Start browsing our collections!</p>
+                    <a href="/shop" class="btn btn-dark rounded-0 mt-3">Start Shopping</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            {% if cart_items %}
+            <div class="card border-0 bg-light p-4 rounded-0 sticky-top" style="top: 80px;">
+                <h5 class="card-title mb-4">Order Summary</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-light px-0 border-0">
+                        Subtotal:
+                        <span id="cart-subtotal">$709.98</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-light px-0 border-0">
+                        Shipping:
+                        <span>$0.00</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-light px-0 border-top mt-2">
+                        **Order Total:**
+                        <span id="cart-total" class="h5 font-weight-bold">$709.98</span>
+                    </li>
+                </ul>
+                <button class="btn btn-dark btn-lg btn-block rounded-0">Proceed to Checkout</button>
+                <p class="text-center small mt-3 text-muted">Shipping calculated at checkout.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us | AURORA Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">Get In Touch</h1>
+            <p class="lead text-center text-muted mb-5">
+                Have a question about an order or our minimalist collection? We'd love to hear from you.
+            </p>
+
+            <form action="/submit-contact" method="POST" class="needs-validation" novalidate>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputName">Full Name</label>
+                        <input type="text" class="form-control rounded-0" name="name" id="inputName" required>
+                        <div class="invalid-feedback">Please provide your name.</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail">Email Address</label>
+                        <input type="email" class="form-control rounded-0" name="email" id="inputEmail" required>
+                        <div class="invalid-feedback">Please provide a valid email.</div>
+                    </div>
+                </div>
+{#                <div class="form-group">#}
+{#                    <label for="inputSubject">Subject</label>#}
+{#                    <select id="inputSubject" class="form-control rounded-0" required>#}
+{#                        <option selected value="">Choose...</option>#}
+{#                        <option>Order Inquiry</option>#}
+{#                        <option>Product Information</option>#}
+{#                        <option>Returns/Exchanges</option>#}
+{#                        <option>General Feedback</option>#}
+{#                    </select>#}
+{#                    <div class="invalid-feedback">Please select a subject.</div>#}
+{#                </div>#}
+                <div class="form-group">
+                    <label for="inputMessage">Message</label>
+                    <textarea class="form-control rounded-0" name="message" id="inputMessage" rows="5" required></textarea>
+                    <div class="invalid-feedback">Please enter your message.</div>
+                </div>
+
+                <button type="submit" class="btn btn-dark btn-lg btn-block rounded-0 mt-4">Send Message</button>
+            </form>
+
+            <div class="text-center mt-5 pt-4 border-top">
+                <h5 class="mb-3">Our Details</h5>
+                <p class="mb-1">**Email:** support@aurora.com</p>
+                <p class="mb-1">**Phone:** +1 (555) 123-4567</p>
+                <p class="mb-1">**Address:** 123 Minimalist Blvd, Suite 100, City, Country</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

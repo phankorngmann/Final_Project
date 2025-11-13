@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}{{ collection_title }} | AURORA Store{% endblock %}
+
+{% block content %}
+    <div class="container product-grid-section py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <h2 class="section-title m-0">{{ collection_title }}</h2>
+            <div class="form-inline">
+                <label for="sort" class="mr-2 text-muted small">SORT BY:</label>
+                <select class="form-control form-control-sm rounded-0" id="sort">
+                    <option>Featured</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row" id="product-list">
+            {% for product in products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+                <div class="card h-100 border-0 product-card">
+                    <div class="product-image-container">
+                        <img class="card-img-top" src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}">
+
+                        {% if product.is_sale %}
+                            <span class="badge badge-danger sale-badge">SALE</span>
+                        {% elif product.is_new %}
+                            <span class="badge badge-info new-badge">NEW</span>
+                        {% endif %}
+
+                        <div class="quick-view-overlay text-center">
+                            <a href="#" class="btn btn-dark btn-sm rounded-0">Quick View</a>
+                        </div>
+                    </div>
+                    <div class="card-body text-center p-3">
+                        <p class="text-muted product-category small m-0">{{ product.category }}</p>
+                        <h5 class="card-title font-weight-normal mb-1">{{ product.name }}</h5>
+
+                        {% if product.is_sale %}
+                            <h6 class="product-price">
+                                <span class="original-price">${{ "%.2f"|format(product.original_price) }}</span>
+                                <span class="sale-price">${{ "%.2f"|format(product.price) }}</span>
+                            </h6>
+                        {% else %}
+                            <h6 class="product-price">${{ "%.2f"|format(product.price) }}</h6>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="lead text-muted">No products found in this collection.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
