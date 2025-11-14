@@ -1,4 +1,15 @@
 from flask import Flask,render_template
+from dotenv import load_dotenv
+import os
+import logging
+
+# Load environment variables from .env (if present) so the app and routes
+# have access to TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID when started
+load_dotenv()
+
+# Configure basic logging so route and telegram logs are visible during development
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s: %(message)s')
+
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'
 
